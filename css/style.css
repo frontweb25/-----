@@ -92,12 +92,10 @@ body {
    margin-top: 16px;
 }
 .card__count div {
-    display: inline-block;
-    padding: 2px 16px;
-    border: 1px solid #ccc;
-    border-radius: 50px;
-    color: #fff;
-    background-color: #777;
+    font-weight: 500;
+}
+.card__count_empty {
+    color: red;
 }
 .card__cost div {
     font-size: 24px;
