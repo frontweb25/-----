@@ -4,6 +4,12 @@ const domElements = {
     search: {
         input: document.getElementById('search-input'),
         button: document.getElementById('search-button')
+    },
+    filters: {
+        category: document.getElementById('filter-category'),
+        color: document.getElementById('filter-color'),
+        year: document.getElementById('filter-year'),
+        country: document.getElementById('filter-country'),
     }
 };
 
@@ -67,13 +73,17 @@ domElements.results.innerHTML = cardsArr.join('');
 
 //Поиск товаров
 
-
 let searchValue = '';
 // Изменение значения поля поиска
-domElements.search.input.oninput = (event) => {
-    const target = event.target;
-    searchValue = target.value;
-};
+// domElements.search.input.oninput = (event) => {
+//     const target = event.target;
+//     searchValue = target.value;
+// };
+domElements.search.input.addEventListener('input', () => {
+    let value = domElements.search.input.value;
+    searchValue = value;
+});
+
 
 //Клик по кнопке поиска
 domElements.search.button.onclick = () => {
@@ -95,3 +105,53 @@ function filterSearch() {
 
     domElements.results.innerHTML = newFilteredCardsHTML.join('');
 }
+
+
+//Фильтрация товаров
+const filtersType = [
+    'category',
+    'color',
+    'year',
+    'country'
+];
+
+function filterSelect(filterType, arr) {
+    domElements.filters[filterType].onchange = (event) => {
+        const target = event.target.value;
+
+        const filteredCards = arr.filter(card => {
+            const reg = new RegExp(target);
+    
+            if(reg.test(card.params[filterType])) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        const fullFilterCards = checkOtherFilters(filtersType, filteredCards)
+        const newFilCardsHTML = generateCards(fullFilterCards);
+        domElements.results.innerHTML = newFilCardsHTML.join('');
+    };
+}   
+
+filtersType.forEach(item => filterSelect(item, cardsData))
+
+function checkOtherFilters(filtersType, filteredCards) {
+    let appdateFilteredCards = filteredCards;
+    filtersType.forEach(type => {
+       const value = domElements.filters[type].value;
+       const reg = new RegExp(value);
+       const newFilterCard = appdateFilteredCards.filter(card => {
+           if(reg.test(card.params[type])) {
+               return true;
+           } else {
+               return false;
+           }
+       });
+       appdateFilteredCards = newFilterCard;
+    });
+    return appdateFilteredCards;
+}
+
+
+
