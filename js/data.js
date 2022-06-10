@@ -1,8 +1,9 @@
+
+
 const category = {
    tehnica: 'Техника',
    odejda: 'Одежда',
    obuv: 'Обувь',
-   stroimat: 'Строй материалы'
 };
 
 const cardsData = [
@@ -85,5 +86,4 @@ const cardsData = [
         cost: 1500
     },
 ];
-
 

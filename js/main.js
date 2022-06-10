@@ -115,30 +115,42 @@ const filtersType = [
     'country'
 ];
 
-function filterSelect(filterType, arr) {
-    domElements.filters[filterType].onchange = (event) => {
-        const target = event.target.value;
+filtersType.forEach(item => handelChangeFilter(item));
 
-        const filteredCards = arr.filter(card => {
-            const reg = new RegExp(target);
-    
-            if(reg.test(card.params[filterType])) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        const fullFilterCards = checkOtherFilters(filtersType, filteredCards)
-        const newFilCardsHTML = generateCards(fullFilterCards);
-        domElements.results.innerHTML = newFilCardsHTML.join('');
+//Отслеживание изменений значений фильтров
+
+function handelChangeFilter(type) {
+    domElements.filters[type].onchange = (event) => {
+       const target = event.target.value;
+       const filteredCards =  filterCards(type, target, cardsData);
+       const fullFilteredCards = checkOtherFilters(filtersType, filteredCards, type);
+
+       const cardsHTML = generateCards(fullFilteredCards).join('');
+       domElements.results.innerHTML = cardsHTML;
     };
+}
+
+
+//Функция фильтрации карточек по фильтру
+function filterCards(filterType, target, cards) {
+    const filteredCards = cards.filter(card => {
+        const reg = new RegExp(target);
+        if(reg.test(card.params[filterType])) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+    return filteredCards;
 }   
 
-filtersType.forEach(item => filterSelect(item, cardsData))
 
-function checkOtherFilters(filtersType, filteredCards) {
+
+function checkOtherFilters(filtersType, filteredCards, extraFilterType) {
     let appdateFilteredCards = filteredCards;
-    filtersType.forEach(type => {
+    let filteredFiltersType = filtersType.filter(type => type !== extraFilterType)
+
+    filteredFiltersType.forEach(type => {
        const value = domElements.filters[type].value;
        const reg = new RegExp(value);
        const newFilterCard = appdateFilteredCards.filter(card => {
